@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Semiconductor operations analytics case: diagnosing why on-time delivery fell while production remained healthy.">
+  <title>Semiconductor OTD Case | Analytics Decision Cases</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>
+    .case-hero{padding:86px 0 72px}.back-link{display:inline-block;margin-bottom:44px;color:var(--muted);text-decoration:none;font-size:.9rem}
+    .back-link:hover{color:var(--accent)}.case-kicker{color:var(--accent);font-size:.72rem;font-weight:700;letter-spacing:.14em}
+    .case-hero h1{max-width:900px;margin:14px 0 26px;font-family:"Manrope",Arial,sans-serif;font-size:clamp(2.7rem,6vw,5rem);line-height:1.03;letter-spacing:-.055em}
+    .case-intro{max-width:760px;color:var(--muted);font-size:1.12rem}.case-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px}
+    .case-tags span{padding:7px 11px;border:1px solid var(--line);border-radius:999px;font-size:.76rem;color:#55635f;background:white}
+    .metric-band{background:var(--dark);color:white;padding:40px 0}.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+    .metric{padding:5px 34px;border-right:1px solid rgba(255,255,255,.16)}.metric:first-child{padding-left:0}.metric:last-child{border:0}
+    .metric small{display:block;color:#a9c5ba;font-size:.69rem;font-weight:700;letter-spacing:.12em}.metric strong{display:block;margin:8px 0 3px;font-family:"Manrope";font-size:2rem}.metric span{color:#cbd7d2;font-size:.88rem}
+    .story{padding:90px 0}.story-section{display:grid;grid-template-columns:220px 1fr;gap:65px;padding:62px 0;border-top:1px solid var(--line)}
+    .story-section:first-child{border-top:0;padding-top:0}.step{color:var(--accent);font-size:.7rem;font-weight:700;letter-spacing:.13em}
+    .story-section h2{margin:0 0 20px;font-family:"Manrope";font-size:clamp(1.8rem,3.2vw,2.7rem);line-height:1.13;letter-spacing:-.035em}
+    .story-section p{max-width:760px;color:var(--muted);font-size:1.02rem}.callout{margin:30px 0;padding:25px 28px;background:var(--accent-soft);border-left:4px solid var(--accent)}
+    .callout strong{font-family:"Manrope";font-size:1.22rem}.rule{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;margin:28px 0;padding:26px;background:white;border:1px solid var(--line)}
+    .rule-box strong{display:block;font-size:1.15rem}.rule-box small{color:var(--muted)}.arrow{color:var(--accent);font-size:1.5rem}
+    .grain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}.grain-card{background:white;border:1px solid var(--line);padding:22px}
+    .grain-card small{color:var(--accent);font-weight:700;letter-spacing:.1em}.grain-card strong{display:block;margin-top:6px;font-size:1.1rem}
+    .data-table{width:100%;border-collapse:collapse;margin:26px 0;background:white;border:1px solid var(--line)}
+    .data-table th,.data-table td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--line)}.data-table th{font-size:.72rem;letter-spacing:.07em;color:var(--muted);background:#f0f2ef}
+    .data-table tr:last-child td{border-bottom:0}.highlight-row td{font-weight:700;color:var(--accent)}
+    .diagnostic{margin:30px 0;display:flex;flex-wrap:wrap;align-items:center;gap:9px}.diagnostic span{background:white;border:1px solid var(--line);padding:10px 13px;border-radius:4px;font-weight:600;font-size:.9rem}.diagnostic b{color:var(--accent)}
+    .quote{margin:36px 0;padding:35px;background:var(--dark);color:white;font-family:"Manrope";font-size:clamp(1.5rem,3vw,2.4rem);line-height:1.2;letter-spacing:-.03em}
+    .quote small{display:block;margin-top:12px;color:#a9c5ba;font-family:"DM Sans";font-size:.8rem;letter-spacing:.08em}
+    .decision-flow{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0}.decision-card{padding:26px;background:white;border:1px solid var(--line)}
+    .decision-card small{color:var(--accent);font-weight:700;letter-spacing:.1em}.decision-card strong{display:block;margin:8px 0}.decision-card p{margin:0;font-size:.92rem}
+    .success{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}.success div{padding:22px;background:var(--accent-soft)}.success strong{display:block}.success span{font-size:.88rem;color:var(--muted)}
+    .closing{padding:70px 0 95px;border-top:1px solid var(--line)}.closing h2{max-width:800px;font-family:"Manrope";font-size:clamp(2rem,4vw,3.5rem);line-height:1.08;letter-spacing:-.045em;margin:0 0 22px}
+    @media(max-width:800px){.metric-grid,.grain-grid,.success,.decision-flow{grid-template-columns:1fr}.metric{padding:20px 0;border-right:0;border-bottom:1px solid rgba(255,255,255,.16)}.story-section{grid-template-columns:1fr;gap:16px}.rule{grid-template-columns:1fr}.arrow{transform:rotate(90deg);width:max-content}.data-table{font-size:.84rem}.data-table th,.data-table td{padding:11px 9px}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="../../">ANALYTICS DECISION CASES</a>
+    <a class="nav-link" href="../../#cases">All Cases</a>
+  </div>
+</header>
+
+<main>
+<section class="case-hero container">
+  <a class="back-link" href="../../">← Back to Case Library</a>
+  <p class="case-kicker">CASE 01 · SEMICONDUCTOR / MANUFACTURING</p>
+  <h1>Production Was Healthy. Why Was On-Time Delivery Falling?</h1>
+  <p class="case-intro">A business-first diagnostic case tracing a six-week decline in customer delivery performance from KPI definition to an operational bottleneck—and then to a decision that preserves the business control without preserving the wait.</p>
+  <div class="case-tags"><span>Operations Analytics</span><span>Metric Definition</span><span>Data Grain</span><span>Process Analytics</span><span>Root Cause Analysis</span></div>
+</section>
+
+<section class="metric-band">
+  <div class="container metric-grid">
+    <div class="metric"><small>CUSTOMER OUTCOME</small><strong>95% → 88%</strong><span>On-Time Delivery</span></div>
+    <div class="metric"><small>PRODUCTION</small><strong>93% → 92%</strong><span>Completed by required date</span></div>
+    <div class="metric"><small>POST-PRODUCTION</small><strong>1.1 → 2.6 days</strong><span>Production Complete → Ship</span></div>
+  </div>
+</section>
+
+<div class="story container">
+<section class="story-section">
+  <div><span class="step">01 · BUSINESS PROBLEM</span></div>
+  <div>
+    <h2>The factory looked healthy. The customer outcome did not.</h2>
+    <p>A mid-sized semiconductor company's On-Time Delivery had deteriorated for six consecutive weeks. Production output showed no obvious decline, equipment utilization remained normal to high, yet customer escalations about late deliveries were increasing.</p>
+    <div class="callout"><strong>Business question:</strong><br>Where in the order-to-delivery lifecycle is the delay occurring, and where should Operations intervene?</div>
+  </div>
+</section>
+
+<section class="story-section">
+  <div><span class="step">02 · DEFINE THE KPI</span></div>
+  <div>
+    <h2>Before diagnosing OTD, define what “on time” means.</h2>
+    <p>The company measures OTD at the <strong>Customer Order Line</strong> grain. The full committed quantity must be delivered on or before the promised delivery date. A partial delivery does not count as an on-time order line.</p>
+    <div class="rule">
+      <div class="rule-box"><strong>1,000 units committed</strong><small>700 delivered by promise date</small></div>
+      <div class="arrow">→</div>
+      <div class="rule-box"><strong>OTD Flag = Late</strong><small>On-time quantity = 70%, but order-line OTD = 0</small></div>
+    </div>
+    <p><strong>Metric:</strong> OTD % = On-Time Eligible Order Lines ÷ Total Eligible Order Lines.</p>
+    <p>The report uses the latest promised delivery date. Promise-date revision behavior was checked as a governance edge case; no material change was found that could explain the recent decline.</p>
+  </div>
+</section>
+
+<section class="story-section">
+  <div><span class="step">03 · SOURCE &amp; GRAIN</span></div>
+  <div>
+    <h2>Three operational systems. Three different grains.</h2>
+    <div class="grain-grid">
+      <div class="grain-card"><small>OMS</small><strong>Order Line</strong><span>Promise, product, committed quantity</span></div>
+      <div class="grain-card"><small>MES</small><strong>Production Lot</strong><span>Completion events and quantities</span></div>
+      <div class="grain-card"><small>WMS / TMS</small><strong>Shipment Line</strong><span>Shipment and delivery events</span></div>
+    </div>
+    <p>One order line may be fulfilled by multiple production lots and multiple shipment lines. A direct raw join can therefore create fanout and double-count quantities. The analysis first reconciles operational events back to the business grain needed for OTD.</p>
+    <div class="callout"><strong>Modeling principle:</strong> Do not build a fact table just because one can be built. Model only as much as needed to produce trustworthy analysis; operationalize further when reuse and governance justify it.</div>
+  </div>
+</section>
+
+<section class="story-section">
+  <div><span class="step">04 · FIND WHERE</span></div>
+  <div>
+    <h2>Work backward from the customer outcome.</h2>
+    <table class="data-table">
+      <thead><tr><th>METRIC</th><th>PREVIOUS 6 WEEKS</th><th>RECENT 6 WEEKS</th></tr></thead>
+      <tbody>
+        <tr><td>OTD</td><td>95%</td><td>88%</td></tr>
+        <tr><td>Production completed by required date</td><td>93%</td><td>92%</td></tr>
+        <tr class="highlight-row"><td>Production Complete → Ship</td><td>1.1 days</td><td>2.6 days</td></tr>
+        <tr><td>Ship → Delivery</td><td>2.0 days</td><td>2.1 days</td></tr>
+      </tbody>
+    </table>
+    <p>Production completion and transportation were nearly stable. The deterioration was concentrated after production and before shipment.</p>
+    <div class="diagnostic"><span>OTD ↓</span><b>→</b><span>Production stable</span><b>→</b><span>Production → Ship ↑</span><b>→</b><span>Warehouse Processing ↑</span><b>→</b><span>Product C</span></div>
+    <table class="data-table">
+      <thead><tr><th>PRODUCT FAMILY</th><th>PREVIOUS</th><th>RECENT</th></tr></thead>
+      <tbody><tr><td>Product A</td><td>0.2 day</td><td>0.3 day</td></tr><tr><td>Product B</td><td>0.2 day</td><td>0.3 day</td></tr><tr class="highlight-row"><td>Product C</td><td>0.3 day</td><td>3.1 days</td></tr><tr><td>Product D</td><td>0.2 day</td><td>0.4 day</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="story-section">
+  <div><span class="step">05 · FIND WHY</span></div>
+  <div>
+    <h2>A new control changed the fulfillment process.</h2>
+    <p>About seven weeks earlier, Product C gained a <strong>Manual Allocation Review</strong>. The control was introduced to prevent constrained inventory from being consumed by standard orders before strategic-customer demand could be protected.</p>
+    <p><strong>Before:</strong> Packing Complete → Warehouse Queue → Inventory Ready</p>
+    <p><strong>After:</strong> Packing Complete → Manual Allocation Review → Warehouse Queue → Inventory Ready</p>
+    <table class="data-table">
+      <thead><tr><th>STAGE</th><th>BEFORE</th><th>AFTER</th></tr></thead>
+      <tbody>
+        <tr class="highlight-row"><td>Packing → Allocation Review Start</td><td>N/A</td><td>1.8 days</td></tr>
+        <tr><td>Allocation Review Processing</td><td>N/A</td><td>0.2 day</td></tr>
+        <tr class="highlight-row"><td>Review Complete → Warehouse Queue</td><td>N/A</td><td>0.7 day</td></tr>
+        <tr><td>Warehouse Queue → Ready</td><td>0.3 day</td><td>0.4 day</td></tr>
+        <tr><td><strong>Total</strong></td><td><strong>0.3 day</strong></td><td><strong>3.1 days</strong></td></tr>
+      </tbody>
+    </table>
+    <div class="quote">“The bottleneck wasn't the work. It was the wait.”<small>PROCESSING TIME ≠ WAITING / QUEUE TIME</small></div>
+    <p>The review itself required only about 0.2 day. Most of the delay came from waiting to enter the review and waiting again after review. Production volume, quality, transportation, and promise-date revision behavior were also checked and did not show changes large enough to explain the deterioration.</p>
+  </div>
+</section>
+
+<section class="story-section">
+  <div><span class="step">06 · BUSINESS DECISION</span></div>
+  <div>
+    <h2>Preserve the control. Remove unnecessary waiting.</h2>
+    <p>Removing Manual Allocation Review immediately would ignore why it exists: protecting scarce inventory for strategic customers. The first decision question is therefore: <strong>How often does the review actually change an allocation decision?</strong></p>
+    <div class="decision-flow">
+      <div class="decision-card"><small>STANDARD / RULE-BASED</small><strong>Auto Allocation → Warehouse</strong><p>Route normal orders directly when allocation rules can make the decision reliably.</p></div>
+      <div class="decision-card"><small>CONFLICT / AMBIGUITY</small><strong>Manual Review → Warehouse</strong><p>Escalate only true exceptions that require human judgment.</p></div>
+    </div>
+    <p>This converts a 100% manual-review workflow into an exception-based control. If the review rarely changes allocation and existing system rules already protect priority customers, full removal can then be evaluated.</p>
+  </div>
+</section>
+
+<section class="story-section">
+  <div><span class="step">07 · VALIDATE THE DECISION</span></div>
+  <div>
+    <h2>A successful change must improve speed without recreating the original risk.</h2>
+    <p>Pilot the automated / exception-based flow for a subset of Product C orders and evaluate both service performance and control effectiveness.</p>
+    <div class="success">
+      <div><strong>Warehouse Processing Time ↓</strong><span>Move back toward the historical ~0.3-day level.</span></div>
+      <div><strong>OTD ↑</strong><span>Recover toward the historical 94–96% range.</span></div>
+      <div><strong>Allocation Errors ↔</strong><span>Do not increase strategic-customer inventory failures.</span></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<section class="closing">
+  <div class="container">
+    <p class="section-label">CASE TAKEAWAY</p>
+    <h2>Start from the customer outcome. Separate WHERE from WHY. Understand the control before removing the bottleneck.</h2>
+    <p class="case-intro">The case began with a factory that looked healthy and a customer KPI that did not. The useful answer came from defining the metric, reconciling grain, tracing the process, separating processing time from waiting time, and connecting the root cause to a decision that respected the business constraint.</p>
+    <a class="primary-link" href="../../">← Back to all cases</a>
+  </div>
+</section>
+</main>
+
+<footer><div class="container footer-inner"><span>Analytics Decision Cases</span><span>Case 01 · Semiconductor / Manufacturing</span></div></footer>
+</body>
+</html>
