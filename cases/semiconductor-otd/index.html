@@ -2,1154 +2,968 @@
 <html lang="en">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="description"
+    content="Semiconductor operations analytics case study diagnosing why on-time delivery declined while production remained healthy."
+  >
+
+  <title>
+    Semiconductor OTD Case | Analytics Decision Cases
+  </title>
+
+  <!-- Keep shared fonts / base styles from homepage -->
+  <link rel="stylesheet" href="../../styles.css">
+
+  <style>
+
+    /* =====================================================
+       CASE 01 — SEMICONDUCTOR
+       Independent Case Detail Design System
+       ===================================================== */
+
+    :root {
+      --navy: #0d1b24;
+      --navy-2: #122832;
+      --navy-3: #193943;
+
+      --cyan: #4db5c7;
+      --cyan-light: #d9f0f3;
+
+      --paper: #f3f6f7;
+      --white: #ffffff;
+
+      --ink: #15242c;
+      --muted: #62737c;
+      --line: #d7e0e3;
+
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "DM Sans", Arial, sans-serif;
+    }
+
+    a {
+      color: inherit;
+    }
+
+
+    /* =====================================================
+       CASE NAV
+       ===================================================== */
 
-<meta charset="UTF-8">
+    .case-nav {
+      background: var(--navy);
+      color: white;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+
+    .case-nav-inner {
+      width: min(calc(100% - 48px), var(--max));
+      height: 72px;
+      margin: auto;
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-<meta
-  name="description"
-  content="Semiconductor operations analytics case: diagnosing why on-time delivery fell while production remained healthy."
->
+    .case-brand {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-decoration: none;
+    }
 
-<title>
-Semiconductor OTD Case | Analytics Decision Cases
-</title>
+    .case-nav-link {
+      color: #b9c8ce;
+      font-size: .88rem;
+      text-decoration: none;
+    }
 
-<link
-  rel="stylesheet"
-  href="../../styles.css"
->
+    .case-nav-link:hover {
+      color: white;
+    }
 
 
-<style>
+    /* =====================================================
+       DARK CASE COVER
+       ===================================================== */
 
-/* =========================================================
-   SEMICONDUCTOR CASE DETAIL PAGE
-   ========================================================= */
+    .case-cover {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(
+          135deg,
+          #0d1b24 0%,
+          #122832 58%,
+          #15333d 100%
+        );
+      color: white;
+    }
 
-body.case-page {
+    .case-cover::after {
+      content: "01";
+      position: absolute;
 
-  --case-bg: #edf3f5;
-  --case-paper: #ffffff;
+      right: -25px;
+      bottom: -85px;
 
-  --case-ink: #122630;
-  --case-muted: #60747d;
+      font-family: "Manrope", Arial, sans-serif;
+      font-size: clamp(15rem, 31vw, 31rem);
+      font-weight: 700;
+      line-height: 1;
 
-  --case-accent: #176b7a;
-  --case-soft: #dcecef;
+      color: rgba(255,255,255,.025);
 
-  --case-dark: #143a45;
+      pointer-events: none;
+    }
 
-  background: var(--case-bg);
+    .cover-inner {
+      position: relative;
+      z-index: 2;
 
-  color: var(--case-ink);
-}
+      width: min(calc(100% - 48px), var(--max));
+      margin: auto;
 
+      padding: 72px 0 76px;
+    }
 
-/* =========================================================
-   HEADER
-   ========================================================= */
+    .back-link {
+      display: inline-block;
 
-.case-page .site-header {
+      margin-bottom: 66px;
 
-  background: var(--case-dark);
+      color: #a9bdc4;
 
-  border-bottom: 0;
-}
+      font-size: .84rem;
+      text-decoration: none;
+    }
 
+    .back-link:hover {
+      color: white;
+    }
 
-.case-page .site-header .brand,
-.case-page .site-header .nav-link {
+    .case-eyebrow {
+      margin: 0 0 18px;
 
-  color: #f6fbfc;
-}
+      color: var(--cyan);
 
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .17em;
+    }
 
-/* =========================================================
-   CASE HERO
-   ========================================================= */
+    .case-title {
+      max-width: 900px;
 
-.case-hero {
+      margin: 0;
 
-  width:
-    min(
-      calc(100% - 48px),
-      1240px
-    );
+      font-family: "Manrope", Arial, sans-serif;
+      font-size: clamp(3.3rem, 7vw, 6.4rem);
+      font-weight: 700;
+      line-height: .98;
+      letter-spacing: -.06em;
+    }
 
-  margin:
-    34px auto 0;
+    .case-summary {
+      max-width: 720px;
 
-  padding:
-    56px 64px 64px;
+      margin: 30px 0 0;
 
-  background:
-    var(--case-paper);
+      color: #b9c8ce;
 
-  border:
-    1px solid #d4e0e4;
+      font-size: 1.08rem;
+      line-height: 1.7;
+    }
 
-  border-radius:
-    16px 16px 0 0;
 
-  position: relative;
+    /* =====================================================
+       EXECUTIVE SIGNALS
+       ===================================================== */
 
-  overflow: hidden;
-}
+    .signal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
 
+      margin-top: 62px;
 
-/* Large Case Number */
+      border-top: 1px solid rgba(255,255,255,.15);
+      border-bottom: 1px solid rgba(255,255,255,.15);
+    }
 
-.case-hero::before {
+    .signal {
+      min-height: 150px;
+      padding: 28px 32px;
 
-  content: "01";
+      border-right: 1px solid rgba(255,255,255,.15);
+    }
 
-  position: absolute;
+    .signal:first-child {
+      padding-left: 0;
+    }
 
-  right: 46px;
+    .signal:last-child {
+      border-right: 0;
+    }
 
-  top: 18px;
+    .signal-label {
+      display: block;
 
-  font-family:
-    "Manrope",
-    Arial,
-    sans-serif;
+      margin-bottom: 13px;
 
-  font-size:
-    clamp(
-      7rem,
-      14vw,
-      12rem
-    );
+      color: var(--cyan);
 
-  line-height: 1;
+      font-size: .67rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+    }
 
-  font-weight: 700;
+    .signal-value {
+      display: block;
 
-  color: #edf4f6;
+      margin-bottom: 8px;
 
-  z-index: 0;
-}
+      font-family: "Manrope", Arial, sans-serif;
+      font-size: clamp(1.65rem, 3vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -.04em;
+    }
 
+    .signal-description {
+      color: #a9bdc4;
+      font-size: .84rem;
+    }
 
-.case-hero > * {
 
-  position: relative;
+    /* =====================================================
+       INVESTIGATION HEADER
+       ===================================================== */
 
-  z-index: 1;
-}
+    .investigation-intro {
+      width: min(calc(100% - 48px), var(--max));
+      margin: auto;
 
+      padding: 78px 0 46px;
+    }
 
-/* Back Link */
+    .section-eyebrow {
+      margin: 0 0 12px;
 
-.back-link {
+      color: #347b88;
 
-  display: inline-block;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .16em;
+    }
 
-  margin-bottom: 44px;
+    .investigation-intro h2 {
+      max-width: 760px;
 
-  color:
-    var(--case-accent);
+      margin: 0;
 
-  text-decoration: none;
+      font-family: "Manrope", Arial, sans-serif;
+      font-size: clamp(2.3rem, 4vw, 4rem);
+      line-height: 1.08;
+      letter-spacing: -.045em;
+    }
 
-  font-size: .9rem;
-}
+    .investigation-intro p {
+      max-width: 680px;
 
+      margin: 20px 0 0;
 
-.back-link:hover {
+      color: var(--muted);
 
-  text-decoration: underline;
-}
+      font-size: 1rem;
+      line-height: 1.7;
+    }
 
 
-/* Case Label */
+    /* =====================================================
+       CASE CONTENT
+       ===================================================== */
 
-.case-kicker {
+    .case-body {
+      width: min(calc(100% - 48px), var(--max));
+      margin: auto;
 
-  color:
-    var(--case-accent);
+      padding-bottom: 100px;
+    }
 
-  font-size: .72rem;
+    .chapter {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr);
 
-  font-weight: 700;
+      margin-top: 22px;
 
-  letter-spacing: .14em;
-}
+      background: white;
 
+      border: 1px solid var(--line);
+    }
 
-/* Hero Title */
+    .chapter-number {
+      padding: 38px 26px;
 
-.case-hero h1 {
+      background: #e7eef0;
 
-  max-width: 850px;
+      border-right: 1px solid var(--line);
 
-  margin:
-    14px 0 26px;
+      color: #347b88;
 
-  color:
-    var(--case-ink);
+      font-family: "Manrope", Arial, sans-serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+    }
 
-  font-family:
-    "Manrope",
-    Arial,
-    sans-serif;
+    .chapter-content {
+      padding: 44px 52px 50px;
+    }
 
-  font-size:
-    clamp(
-      2.8rem,
-      5.7vw,
-      4.9rem
-    );
+    .chapter-label {
+      display: block;
 
-  line-height: 1.03;
+      margin-bottom: 10px;
 
-  letter-spacing: -.055em;
-}
+      color: #347b88;
 
+      font-size: .67rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+    }
 
-/* Hero Description */
+    .chapter h3 {
+      max-width: 760px;
 
-.case-intro {
+      margin: 0 0 20px;
 
-  max-width: 760px;
+      font-family: "Manrope", Arial, sans-serif;
+      font-size: clamp(1.75rem, 3vw, 2.65rem);
+      line-height: 1.12;
+      letter-spacing: -.035em;
+    }
 
-  color:
-    var(--case-muted);
+    .chapter p {
+      max-width: 780px;
 
-  font-size: 1.12rem;
+      color: var(--muted);
 
-  line-height: 1.65;
-}
+      font-size: 1rem;
+      line-height: 1.75;
+    }
 
 
-/* Tags */
+    /* =====================================================
+       BUSINESS QUESTION
+       ===================================================== */
 
-.case-tags {
+    .question-box {
+      margin-top: 30px;
+      padding: 26px 28px;
 
-  display: flex;
+      background: var(--navy);
+      color: white;
+    }
 
-  flex-wrap: wrap;
+    .question-box small {
+      display: block;
 
-  gap: 8px;
+      margin-bottom: 10px;
 
-  margin-top: 30px;
-}
+      color: var(--cyan);
 
+      font-size: .67rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+    }
 
-.case-tags span {
+    .question-box strong {
+      display: block;
 
-  padding:
-    7px 11px;
+      max-width: 760px;
 
-  background:
-    var(--case-soft);
+      font-family: "Manrope", Arial, sans-serif;
+      font-size: 1.25rem;
+      line-height: 1.45;
+    }
 
-  border:
-    1px solid #c5dce1;
 
-  border-radius:
-    999px;
+    /* =====================================================
+       METRIC RULE
+       ===================================================== */
 
-  color:
-    var(--case-dark);
+    .metric-rule {
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr;
 
-  font-size: .76rem;
-}
+      margin-top: 30px;
 
+      border: 1px solid var(--line);
+    }
 
-/* =========================================================
-   KPI BAND
-   ========================================================= */
+    .metric-rule > div {
+      padding: 28px;
+    }
 
-.metric-band {
+    .metric-rule strong {
+      display: block;
 
-  width:
-    min(
-      calc(100% - 48px),
-      1240px
-    );
+      margin-bottom: 7px;
 
-  margin:
-    0 auto;
+      font-family: "Manrope", Arial, sans-serif;
+      font-size: 1.15rem;
+    }
 
-  padding:
-    40px 0;
+    .metric-rule span {
+      color: var(--muted);
+      font-size: .88rem;
+    }
 
-  background:
-    var(--case-dark);
+    .metric-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-  color: white;
+      background: var(--cyan-light);
 
-  border-radius:
-    0 0 16px 16px;
-}
+      color: #347b88;
 
+      font-size: 1.7rem;
+      font-weight: 700;
+    }
 
-.metric-band .container {
+    .formula {
+      margin-top: 25px;
+      padding: 20px 24px;
 
-  width: auto;
+      background: #eef4f5;
 
-  margin: 0;
+      border-left: 4px solid #347b88;
 
-  padding:
-    0 64px;
-}
+      font-weight: 600;
+    }
 
 
-.metric-grid {
+    /* =====================================================
+       DATA GRAIN
+       ===================================================== */
 
-  display: grid;
+    .grain-flow {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
 
-  grid-template-columns:
-    repeat(3, 1fr);
+      margin-top: 30px;
 
-  gap: 0;
-}
+      border: 1px solid var(--line);
+    }
 
+    .grain-item {
+      padding: 28px;
 
-.metric {
+      border-right: 1px solid var(--line);
+    }
 
-  padding:
-    5px 34px;
+    .grain-item:last-child {
+      border-right: 0;
+    }
 
-  border-right:
-    1px solid
-    rgba(
-      255,
-      255,
-      255,
-      .16
-    );
-}
+    .grain-system {
+      display: block;
 
+      margin-bottom: 8px;
 
-.metric:first-child {
+      color: #347b88;
 
-  padding-left: 0;
-}
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+    }
 
+    .grain-name {
+      display: block;
 
-.metric:last-child {
+      margin-bottom: 7px;
 
-  border-right: 0;
-}
+      font-family: "Manrope", Arial, sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
 
+    .grain-desc {
+      color: var(--muted);
+      font-size: .85rem;
+      line-height: 1.5;
+    }
 
-.metric small {
+    .principle {
+      margin-top: 25px;
+      padding: 24px 26px;
 
-  display: block;
+      background: #eef4f5;
 
-  color: #a7d2da;
+      color: #40555e;
 
-  font-size: .69rem;
+      line-height: 1.65;
+    }
 
-  font-weight: 700;
 
-  letter-spacing: .12em;
-}
+    /* =====================================================
+       TABLE
+       ===================================================== */
 
+    .table-wrap {
+      overflow-x: auto;
 
-.metric strong {
+      margin-top: 30px;
 
-  display: block;
+      border: 1px solid var(--line);
+    }
 
-  margin:
-    8px 0 3px;
+    table {
+      width: 100%;
 
-  font-family:
-    "Manrope",
-    Arial,
-    sans-serif;
+      border-collapse: collapse;
 
-  font-size: 2rem;
-}
+      background: white;
+    }
 
+    th {
+      padding: 14px 18px;
 
-.metric span {
+      background: #e7eef0;
 
-  color: #cbd7d2;
+      color: #52666e;
 
-  font-size: .88rem;
-}
+      text-align: left;
 
+      font-size: .68rem;
+      letter-spacing: .1em;
+    }
 
-/* =========================================================
-   STORY CONTAINER
-   ========================================================= */
+    td {
+      padding: 16px 18px;
 
-.story {
+      border-top: 1px solid var(--line);
 
-  width:
-    min(
-      calc(100% - 48px),
-      1120px
-    );
+      color: #41545c;
 
-  margin:
-    0 auto;
+      font-size: .92rem;
+    }
 
-  padding:
-    72px 0 90px;
-}
+    tr.highlight td {
+      background: #e7f3f5;
 
+      color: #17697a;
 
-/* =========================================================
-   INDIVIDUAL ANALYSIS SECTIONS
-   ========================================================= */
+      font-weight: 700;
+    }
 
-.story-section {
 
-  display: grid;
+    /* =====================================================
+       DIAGNOSTIC PATH
+       ===================================================== */
 
-  grid-template-columns:
-    170px
-    minmax(0, 1fr);
+    .path {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
 
-  gap: 48px;
+      gap: 8px;
 
-  margin:
-    0 0 28px;
+      margin-top: 30px;
+    }
 
-  padding:
-    48px 52px;
+    .path-step {
+      padding: 11px 14px;
 
-  background:
-    var(--case-paper);
+      background: var(--navy);
 
-  border:
-    1px solid #d7e2e5;
+      color: white;
 
-  border-radius:
-    12px;
+      font-size: .8rem;
+      font-weight: 600;
+    }
 
-  box-shadow:
-    0 8px 28px
-    rgba(
-      20,
-      58,
-      69,
-      .045
-    );
-}
+    .path-arrow {
+      color: #347b88;
+      font-weight: 700;
+    }
 
 
-.step {
+    /* =====================================================
+       ROOT CAUSE
+       ===================================================== */
 
-  color:
-    var(--case-accent);
+    .process-change {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
 
-  font-size: .7rem;
+      gap: 16px;
 
-  font-weight: 700;
+      margin-top: 30px;
+    }
 
-  letter-spacing: .13em;
-}
+    .process-card {
+      padding: 26px;
 
+      border: 1px solid var(--line);
 
-.story-section h2 {
+      background: #f7f9fa;
+    }
 
-  margin:
-    0 0 20px;
+    .process-card.after {
+      border-top: 4px solid #347b88;
+    }
 
-  color:
-    var(--case-ink);
+    .process-card small {
+      display: block;
 
-  font-family:
-    "Manrope",
-    Arial,
-    sans-serif;
+      margin-bottom: 12px;
 
-  font-size:
-    clamp(
-      1.8rem,
-      3.2vw,
-      2.7rem
-    );
+      color: #347b88;
 
-  line-height: 1.13;
+      font-weight: 700;
+      letter-spacing: .13em;
+    }
 
-  letter-spacing: -.035em;
-}
+    .process-card strong {
+      font-family: "Manrope", Arial, sans-serif;
+      line-height: 1.6;
+    }
 
+    .root-cause {
+      margin-top: 30px;
+      padding: 38px;
 
-.story-section p {
+      background: var(--navy);
 
-  max-width: 760px;
+      color: white;
+    }
 
-  color:
-    var(--case-muted);
+    .root-cause strong {
+      display: block;
 
-  font-size: 1.02rem;
+      max-width: 700px;
 
-  line-height: 1.7;
-}
+      font-family: "Manrope", Arial, sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 3.2rem);
+      line-height: 1.12;
+      letter-spacing: -.04em;
+    }
 
+    .root-cause span {
+      display: block;
 
-/* =========================================================
-   CALLOUT
-   ========================================================= */
+      margin-top: 13px;
 
-.callout {
+      color: var(--cyan);
 
-  margin:
-    30px 0;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .13em;
+    }
 
-  padding:
-    25px 28px;
 
-  background:
-    var(--case-soft);
+    /* =====================================================
+       DECISION
+       ===================================================== */
 
-  border-left:
-    4px solid
-    var(--case-accent);
-}
+    .decision-question {
+      margin-top: 28px;
+      padding: 24px 26px;
 
+      background: var(--cyan-light);
 
-.callout strong {
+      color: #214953;
 
-  font-family:
-    "Manrope",
-    Arial,
-    sans-serif;
+      font-family: "Manrope", Arial, sans-serif;
+      font-weight: 700;
+    }
 
-  font-size: 1.12rem;
-}
+    .decision-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
 
+      gap: 16px;
 
-/* =========================================================
-   KPI DEFINITION EXAMPLE
-   ========================================================= */
+      margin-top: 18px;
+    }
 
-.rule {
+    .decision {
+      padding: 28px;
 
-  display: grid;
+      border: 1px solid var(--line);
 
-  grid-template-columns:
-    1fr auto 1fr;
+      background: white;
+    }
 
-  gap: 20px;
+    .decision small {
+      color: #347b88;
 
-  align-items: center;
+      font-size: .66rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+    }
 
-  margin:
-    28px 0;
+    .decision strong {
+      display: block;
 
-  padding:
-    26px;
+      margin: 10px 0;
 
-  background:
-    #f9fbfc;
+      font-family: "Manrope", Arial, sans-serif;
+      font-size: 1.15rem;
+    }
 
-  border:
-    1px solid #d7e2e5;
-}
+    .decision p {
+      margin: 0;
 
+      font-size: .9rem;
+    }
 
-.rule-box strong {
 
-  display: block;
+    /* =====================================================
+       VALIDATION
+       ===================================================== */
 
-  font-size: 1.15rem;
-}
+    .validation-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
 
+      gap: 14px;
 
-.rule-box small {
+      margin-top: 28px;
+    }
 
-  color:
-    var(--case-muted);
-}
+    .validation {
+      padding: 24px;
 
+      background: #e7eef0;
+    }
 
-.arrow {
+    .validation strong {
+      display: block;
 
-  color:
-    var(--case-accent);
+      margin-bottom: 7px;
 
-  font-size: 1.5rem;
-}
+      font-family: "Manrope", Arial, sans-serif;
+    }
 
+    .validation span {
+      color: var(--muted);
+      font-size: .84rem;
+      line-height: 1.5;
+    }
 
-/* =========================================================
-   SOURCE & GRAIN
-   ========================================================= */
 
-.grain-grid {
+    /* =====================================================
+       FINAL TAKEAWAY
+       ===================================================== */
 
-  display: grid;
+    .takeaway {
+      background: var(--navy);
+      color: white;
+    }
 
-  grid-template-columns:
-    repeat(3, 1fr);
+    .takeaway-inner {
+      width: min(calc(100% - 48px), var(--max));
+      margin: auto;
 
-  gap: 14px;
+      padding: 90px 0;
+    }
 
-  margin-top: 28px;
-}
+    .takeaway-label {
+      color: var(--cyan);
 
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .16em;
+    }
 
-.grain-card {
+    .takeaway h2 {
+      max-width: 900px;
 
-  padding:
-    22px;
+      margin: 17px 0 25px;
 
-  background:
-    #f9fbfc;
+      font-family: "Manrope", Arial, sans-serif;
+      font-size: clamp(2.4rem, 5vw, 4.6rem);
+      line-height: 1.04;
+      letter-spacing: -.05em;
+    }
 
-  border:
-    1px solid #d7e2e5;
-}
+    .takeaway p {
+      max-width: 730px;
 
+      color: #b8c8ce;
 
-.grain-card small {
+      font-size: 1rem;
+      line-height: 1.7;
+    }
 
-  color:
-    var(--case-accent);
+    .takeaway a {
+      display: inline-block;
 
-  font-weight: 700;
+      margin-top: 25px;
 
-  letter-spacing: .1em;
-}
+      color: white;
 
+      text-decoration: none;
 
-.grain-card strong {
+      border-bottom: 1px solid var(--cyan);
+    }
 
-  display: block;
 
-  margin-top: 6px;
+    /* =====================================================
+       FOOTER
+       ===================================================== */
 
-  font-size: 1.1rem;
-}
+    .case-footer {
+      background: #08141a;
+      color: #849ba4;
+    }
 
+    .footer-inner {
+      width: min(calc(100% - 48px), var(--max));
+      margin: auto;
 
-/* =========================================================
-   TABLES
-   ========================================================= */
+      padding: 28px 0;
 
-.data-table {
+      display: flex;
+      justify-content: space-between;
 
-  width: 100%;
+      font-size: .75rem;
+    }
 
-  margin:
-    26px 0;
 
-  background:
-    #f9fbfc;
+    /* =====================================================
+       RESPONSIVE
+       ===================================================== */
 
-  border:
-    1px solid #d7e2e5;
+    @media (max-width: 800px) {
 
-  border-collapse: collapse;
-}
+      .case-nav-inner,
+      .cover-inner,
+      .investigation-intro,
+      .case-body,
+      .takeaway-inner,
+      .footer-inner {
+        width: calc(100% - 32px);
+      }
 
+      .cover-inner {
+        padding: 45px 0 55px;
+      }
 
-.data-table th,
-.data-table td {
+      .back-link {
+        margin-bottom: 45px;
+      }
 
-  padding:
-    14px 16px;
+      .case-title {
+        font-size: 3.2rem;
+      }
 
-  text-align: left;
+      .signal-grid {
+        grid-template-columns: 1fr;
+      }
 
-  border-bottom:
-    1px solid #d7e2e5;
-}
+      .signal {
+        padding: 22px 0;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255,255,255,.15);
+      }
 
+      .signal:last-child {
+        border-bottom: 0;
+      }
 
-.data-table th {
+      .chapter {
+        grid-template-columns: 1fr;
+      }
 
-  background:
-    #eaf1f3;
+      .chapter-number {
+        padding: 18px 24px;
 
-  color:
-    var(--case-muted);
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
 
-  font-size: .72rem;
+        font-size: 1rem;
+      }
 
-  letter-spacing: .07em;
-}
+      .chapter-content {
+        padding: 30px 24px 36px;
+      }
 
+      .metric-rule,
+      .grain-flow,
+      .process-change,
+      .decision-grid,
+      .validation-grid {
+        grid-template-columns: 1fr;
+      }
 
-.data-table tr:last-child td {
+      .metric-arrow {
+        min-height: 55px;
+        transform: rotate(90deg);
+      }
 
-  border-bottom: 0;
-}
+      .grain-item {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
 
+      .grain-item:last-child {
+        border-bottom: 0;
+      }
 
-.highlight-row td {
+      .footer-inner {
+        gap: 12px;
+        flex-direction: column;
+      }
 
-  color:
-    var(--case-accent);
+    }
 
-  font-weight: 700;
-}
-
-
-/* =========================================================
-   DIAGNOSTIC FLOW
-   ========================================================= */
-
-.diagnostic {
-
-  display: flex;
-
-  flex-wrap: wrap;
-
-  align-items: center;
-
-  gap: 9px;
-
-  margin:
-    30px 0;
-}
-
-
-.diagnostic span {
-
-  padding:
-    10px 13px;
-
-  background:
-    var(--case-soft);
-
-  border:
-    1px solid #c5dce1;
-
-  border-radius: 4px;
-
-  font-size: .9rem;
-
-  font-weight: 600;
-}
-
-
-.diagnostic b {
-
-  color:
-    var(--case-accent);
-}
-
-
-/* =========================================================
-   ROOT CAUSE QUOTE
-   ========================================================= */
-
-.quote {
-
-  margin:
-    36px 0;
-
-  padding:
-    35px;
-
-  background:
-    var(--case-dark);
-
-  color: white;
-
-  font-family:
-    "Manrope",
-    Arial,
-    sans-serif;
-
-  font-size:
-    clamp(
-      1.5rem,
-      3vw,
-      2.4rem
-    );
-
-  line-height: 1.2;
-
-  letter-spacing: -.03em;
-}
-
-
-.quote small {
-
-  display: block;
-
-  margin-top: 12px;
-
-  color: #a7d2da;
-
-  font-family:
-    "DM Sans",
-    Arial,
-    sans-serif;
-
-  font-size: .8rem;
-
-  letter-spacing: .08em;
-}
-
-
-/* =========================================================
-   DECISION
-   ========================================================= */
-
-.decision-flow {
-
-  display: grid;
-
-  grid-template-columns:
-    1fr 1fr;
-
-  gap: 16px;
-
-  margin:
-    28px 0;
-}
-
-
-.decision-card {
-
-  padding:
-    26px;
-
-  background:
-    #f9fbfc;
-
-  border:
-    1px solid #d7e2e5;
-}
-
-
-.decision-card small {
-
-  color:
-    var(--case-accent);
-
-  font-weight: 700;
-
-  letter-spacing: .1em;
-}
-
-
-.decision-card strong {
-
-  display: block;
-
-  margin:
-    8px 0;
-}
-
-
-.decision-card p {
-
-  margin: 0;
-
-  font-size: .92rem;
-}
-
-
-/* =========================================================
-   SUCCESS CRITERIA
-   ========================================================= */
-
-.success {
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(3, 1fr);
-
-  gap: 14px;
-
-  margin-top: 30px;
-}
-
-
-.success div {
-
-  padding:
-    22px;
-
-  background:
-    var(--case-soft);
-}
-
-
-.success strong {
-
-  display: block;
-
-  margin-bottom: 5px;
-}
-
-
-.success span {
-
-  color:
-    var(--case-muted);
-
-  font-size: .88rem;
-}
-
-
-/* =========================================================
-   CLOSING
-   ========================================================= */
-
-.closing {
-
-  padding:
-    82px 0 92px;
-
-  background:
-    var(--case-dark);
-
-  color: white;
-}
-
-
-.closing .section-label {
-
-  color: #a7d2da;
-}
-
-
-.closing h2 {
-
-  max-width: 850px;
-
-  margin:
-    0 0 22px;
-
-  color: white;
-
-  font-family:
-    "Manrope",
-    Arial,
-    sans-serif;
-
-  font-size:
-    clamp(
-      2rem,
-      4vw,
-      3.5rem
-    );
-
-  line-height: 1.08;
-
-  letter-spacing: -.045em;
-}
-
-
-.closing .case-intro {
-
-  color: #c7d8dc;
-}
-
-
-.closing .primary-link {
-
-  display: inline-block;
-
-  margin-top: 22px;
-
-  color: white;
-
-  text-decoration: none;
-
-  border-bottom:
-    1px solid white;
-}
-
-
-/* =========================================================
-   FOOTER
-   ========================================================= */
-
-.case-page footer {
-
-  background:
-    #0e2d35;
-
-  border-top:
-    1px solid
-    rgba(
-      255,
-      255,
-      255,
-      .12
-    );
-}
-
-
-.case-page footer .footer-inner {
-
-  color: #b9ccd1;
-}
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media
-(max-width: 800px) {
-
-  .case-hero {
-
-    width:
-      calc(100% - 30px);
-
-    margin-top:
-      18px;
-
-    padding:
-      38px 26px 42px;
-  }
-
-
-  .case-hero::before {
-
-    right: 18px;
-
-    top: 18px;
-
-    font-size: 7rem;
-  }
-
-
-  .metric-band {
-
-    width:
-      calc(100% - 30px);
-  }
-
-
-  .metric-band .container {
-
-    padding:
-      18px 26px;
-  }
-
-
-  .metric-grid {
-
-    grid-template-columns:
-      1fr;
-  }
-
-
-  .metric {
-
-    padding:
-      20px 0;
-
-    border-right: 0;
-
-    border-bottom:
-      1px solid
-      rgba(
-        255,
-        255,
-        255,
-        .16
-      );
-  }
-
-
-  .metric:last-child {
-
-    border-bottom: 0;
-  }
-
-
-  .story {
-
-    width:
-      calc(100% - 30px);
-  }
-
-
-  .story-section {
-
-    grid-template-columns:
-      1fr;
-
-    gap: 14px;
-
-    padding:
-      30px 25px;
-  }
-
-
-  .grain-grid,
-  .success,
-  .decision-flow {
-
-    grid-template-columns:
-      1fr;
-  }
-
-
-  .rule {
-
-    grid-template-columns:
-      1fr;
-  }
-
-
-  .arrow {
-
-    transform:
-      rotate(90deg);
-
-    width:
-      max-content;
-  }
-
-
-  .data-table {
-
-    font-size: .84rem;
-  }
-
-
-  .data-table th,
-  .data-table td {
-
-    padding:
-      11px 9px;
-  }
-
-}
-
-</style>
+  </style>
 
 </head>
 
 
-<body class="case-page semiconductor-theme">
+<body>
 
 
-<!-- ======================================================
-     NAVIGATION
-     ====================================================== -->
+<!-- =====================================================
+     NAV
+     ===================================================== -->
 
-<header class="site-header">
+<header class="case-nav">
 
-  <div class="container nav">
+  <div class="case-nav-inner">
 
     <a
-      class="brand"
+      class="case-brand"
       href="../../"
     >
       ANALYTICS DECISION CASES
     </a>
 
     <a
-      class="nav-link"
+      class="case-nav-link"
       href="../../#cases"
     >
-      All Cases
+      Case Library ↗
     </a>
 
   </div>
@@ -1160,122 +974,102 @@ body.case-page {
 <main>
 
 
-<!-- ======================================================
-     CASE HERO
-     ====================================================== -->
+<!-- =====================================================
+     DARK CASE COVER
+     ===================================================== -->
 
-<section class="case-hero">
+<section class="case-cover">
 
-  <a
-    class="back-link"
-    href="../../"
-  >
-    ← Back to Case Library
-  </a>
+  <div class="cover-inner">
 
-
-  <p class="case-kicker">
-
-    CASE 01 · SEMICONDUCTOR / MANUFACTURING
-
-  </p>
+    <a
+      class="back-link"
+      href="../../"
+    >
+      ← Back to Case Library
+    </a>
 
 
-  <h1>
-
-    Production Was Healthy.
-    Why Was On-Time Delivery Falling?
-
-  </h1>
+    <p class="case-eyebrow">
+      CASE 01 / OPERATIONS ANALYTICS / SEMICONDUCTOR
+    </p>
 
 
-  <p class="case-intro">
+    <h1 class="case-title">
 
-    A business-first diagnostic case tracing a
-    six-week decline in customer delivery performance
-    from KPI definition to an operational bottleneck—and
-    then to a decision that preserves the business
-    control without preserving the wait.
+      Production was healthy.<br>
+      Why was on-time delivery falling?
 
-  </p>
+    </h1>
 
 
-  <div class="case-tags">
+    <p class="case-summary">
 
-    <span>Operations Analytics</span>
+      A six-week decline in customer delivery performance
+      looked like a manufacturing problem.
 
-    <span>Metric Definition</span>
+      Working backward from the customer outcome revealed
+      something different: the bottleneck was created
+      after production by a newly introduced fulfillment control.
 
-    <span>Data Grain</span>
-
-    <span>Process Analytics</span>
-
-    <span>Root Cause Analysis</span>
-
-  </div>
-
-</section>
+    </p>
 
 
-<!-- ======================================================
-     KPI SUMMARY
-     ====================================================== -->
-
-<section class="metric-band">
-
-  <div class="container metric-grid">
+    <div class="signal-grid">
 
 
-    <div class="metric">
+      <div class="signal">
 
-      <small>
-        CUSTOMER OUTCOME
-      </small>
+        <span class="signal-label">
+          CUSTOMER SIGNAL
+        </span>
 
-      <strong>
-        95% → 88%
-      </strong>
+        <strong class="signal-value">
+          95% → 88%
+        </strong>
 
-      <span>
-        On-Time Delivery
-      </span>
+        <span class="signal-description">
+          On-Time Delivery
+        </span>
+
+      </div>
+
+
+      <div class="signal">
+
+        <span class="signal-label">
+          BREAKPOINT
+        </span>
+
+        <strong class="signal-value">
+          1.1 → 2.6 days
+        </strong>
+
+        <span class="signal-description">
+          Production Complete → Ship
+        </span>
+
+      </div>
+
+
+      <div class="signal">
+
+        <span class="signal-label">
+          ROOT CAUSE
+        </span>
+
+        <strong class="signal-value">
+          Queue / Wait
+        </strong>
+
+        <span class="signal-description">
+          Manual Allocation Review workflow
+        </span>
+
+      </div>
+
 
     </div>
-
-
-    <div class="metric">
-
-      <small>
-        PRODUCTION
-      </small>
-
-      <strong>
-        93% → 92%
-      </strong>
-
-      <span>
-        Completed by required date
-      </span>
-
-    </div>
-
-
-    <div class="metric">
-
-      <small>
-        POST-PRODUCTION
-      </small>
-
-      <strong>
-        1.1 → 2.6 days
-      </strong>
-
-      <span>
-        Production Complete → Ship
-      </span>
-
-    </div>
-
 
   </div>
 
@@ -1283,44 +1077,64 @@ body.case-page {
 
 
 
-<!-- ======================================================
-     ANALYTICAL STORY
-     ====================================================== -->
+<!-- =====================================================
+     INVESTIGATION INTRO
+     ===================================================== -->
 
-<div class="story">
+<section class="investigation-intro">
+
+  <p class="section-eyebrow">
+    THE INVESTIGATION
+  </p>
+
+  <h2>
+    Start with the customer outcome.
+    Work backward through the process.
+  </h2>
+
+  <p>
+
+    The objective was not to build a dashboard first.
+
+    It was to define the KPI correctly, reconcile
+    operational data at the right grain, locate where
+    performance broke down, identify why, and connect
+    the evidence to an operational decision.
+
+  </p>
+
+</section>
 
 
 
-<!-- ======================================================
+<div class="case-body">
+
+
+<!-- =====================================================
      01 BUSINESS PROBLEM
-     ====================================================== -->
+     ===================================================== -->
 
-<section class="story-section">
+<section class="chapter">
 
-  <div>
+  <div class="chapter-number">
+    01
+  </div>
 
-    <span class="step">
-      01 · BUSINESS PROBLEM
+  <div class="chapter-content">
+
+    <span class="chapter-label">
+      BUSINESS PROBLEM
     </span>
 
-  </div>
-
-
-  <div>
-
-    <h2>
-
+    <h3>
       The factory looked healthy.
       The customer outcome did not.
-
-    </h2>
-
+    </h3>
 
     <p>
 
-      A mid-sized semiconductor company's
-      On-Time Delivery had deteriorated for six
-      consecutive weeks.
+      A mid-sized semiconductor company's On-Time Delivery
+      had deteriorated for six consecutive weeks.
 
       Production output showed no obvious decline,
       equipment utilization remained normal to high,
@@ -1330,17 +1144,19 @@ body.case-page {
     </p>
 
 
-    <div class="callout">
+    <div class="question-box">
+
+      <small>
+        BUSINESS QUESTION
+      </small>
 
       <strong>
-        Business question:
+
+        Where in the order-to-delivery lifecycle
+        is the delay occurring, and where should
+        Operations intervene?
+
       </strong>
-
-      <br>
-
-      Where in the order-to-delivery lifecycle
-      is the delay occurring, and where should
-      Operations intervene?
 
     </div>
 
@@ -1350,106 +1166,94 @@ body.case-page {
 
 
 
-<!-- ======================================================
-     02 DEFINE KPI
-     ====================================================== -->
+<!-- =====================================================
+     02 METRIC DEFINITION
+     ===================================================== -->
 
-<section class="story-section">
+<section class="chapter">
 
-  <div>
-
-    <span class="step">
-      02 · DEFINE THE KPI
-    </span>
-
+  <div class="chapter-number">
+    02
   </div>
 
+  <div class="chapter-content">
 
-  <div>
+    <span class="chapter-label">
+      METRIC DEFINITION
+    </span>
 
-    <h2>
-
+    <h3>
       Before diagnosing OTD,
       define what “on time” means.
-
-    </h2>
-
+    </h3>
 
     <p>
 
-      The company measures OTD at the
-      <strong>Customer Order Line</strong>
-      grain.
+      OTD is measured at the
+      <strong>Customer Order Line</strong> grain.
 
-      The full committed quantity must be
-      delivered on or before the promised
-      delivery date.
+      The full committed quantity must be delivered
+      on or before the promised delivery date.
 
-      A partial delivery does not count as
-      an on-time order line.
+      A partial delivery does not count as an
+      on-time order line.
 
     </p>
 
 
-    <div class="rule">
+    <div class="metric-rule">
 
-
-      <div class="rule-box">
+      <div>
 
         <strong>
           1,000 units committed
         </strong>
 
-        <small>
-          700 delivered by promise date
-        </small>
+        <span>
+          700 arrive by promised date
+        </span>
 
       </div>
 
 
-      <div class="arrow">
+      <div class="metric-arrow">
         →
       </div>
 
 
-      <div class="rule-box">
+      <div>
 
         <strong>
           OTD Flag = Late
         </strong>
 
-        <small>
-          On-time quantity = 70%,
-          but order-line OTD = 0
-        </small>
+        <span>
+          Quantity on time = 70%, but order-line OTD = 0
+        </span>
 
       </div>
-
 
     </div>
 
 
-    <p>
-
-      <strong>Metric:</strong>
+    <div class="formula">
 
       OTD % =
       On-Time Eligible Order Lines
       ÷
-      Total Eligible Order Lines.
+      Total Eligible Order Lines
 
-    </p>
+    </div>
 
 
     <p>
 
-      The report uses the latest promised
+      The operational report uses the latest promised
       delivery date.
 
-      Promise-date revision behavior was
-      checked as a governance edge case;
-      no material change was found that
-      could explain the recent decline.
+      Promise-date revision behavior was therefore
+      treated as a metric-governance edge case and
+      checked before attributing the decline to operations.
 
     </p>
 
@@ -1459,83 +1263,77 @@ body.case-page {
 
 
 
-<!-- ======================================================
+<!-- =====================================================
      03 SOURCE & GRAIN
-     ====================================================== -->
+     ===================================================== -->
 
-<section class="story-section">
+<section class="chapter">
 
-  <div>
-
-    <span class="step">
-      03 · SOURCE & GRAIN
-    </span>
-
+  <div class="chapter-number">
+    03
   </div>
 
+  <div class="chapter-content">
 
-  <div>
+    <span class="chapter-label">
+      SOURCE & GRAIN
+    </span>
 
-    <h2>
-
-      Three operational systems.
-      Three different grains.
-
-    </h2>
-
-
-    <div class="grain-grid">
+    <h3>
+      Three systems.
+      Three different operational grains.
+    </h3>
 
 
-      <div class="grain-card">
+    <div class="grain-flow">
 
-        <small>
+
+      <div class="grain-item">
+
+        <span class="grain-system">
           OMS
-        </small>
+        </span>
 
-        <strong>
+        <strong class="grain-name">
           Order Line
         </strong>
 
-        <span>
-          Promise, product,
-          committed quantity
+        <span class="grain-desc">
+          Customer promise, product and committed quantity
         </span>
 
       </div>
 
 
-      <div class="grain-card">
+      <div class="grain-item">
 
-        <small>
+        <span class="grain-system">
           MES
-        </small>
+        </span>
 
-        <strong>
+        <strong class="grain-name">
           Production Lot
         </strong>
 
-        <span>
-          Completion events
-          and quantities
+        <span class="grain-desc">
+          Manufacturing completion events and quantities
         </span>
 
       </div>
 
 
-      <div class="grain-card">
+      <div class="grain-item">
 
-        <small>
+        <span class="grain-system">
           WMS / TMS
-        </small>
+        </span>
 
-        <strong>
+        <strong class="grain-name">
           Shipment Line
         </strong>
 
-        <span>
-          Shipment and
-          delivery events
+        <span class="grain-desc">
+          Shipment and delivery events
         </span>
 
       </div>
@@ -1546,33 +1344,28 @@ body.case-page {
 
     <p>
 
-      One order line may be fulfilled by
-      multiple production lots and multiple
-      shipment lines.
+      One order line can be fulfilled by multiple
+      production lots and multiple shipment lines.
 
-      A direct raw join can therefore create
-      fanout and double-count quantities.
+      Joining the raw systems directly can therefore
+      create fanout and double-count quantities.
 
-      The analysis first reconciles operational
-      events back to the business grain needed
-      for OTD.
+      Operational events first need to be reconciled
+      back to the business grain required by the KPI.
 
     </p>
 
 
-    <div class="callout">
+    <div class="principle">
 
-      <strong>
-        Modeling principle:
-      </strong>
+      <strong>Modeling principle:</strong>
 
-      Do not build a fact table just because
-      one can be built.
+      build only as much analytical structure as needed
+      to produce trustworthy analysis.
 
-      Model only as much as needed to produce
-      trustworthy analysis; operationalize
-      further when reuse and governance
-      justify it.
+      A reusable fact or semantic model becomes valuable
+      when the use case needs ongoing governance and reuse;
+      it is not automatically required for every diagnostic case.
 
     </div>
 
@@ -1582,272 +1375,163 @@ body.case-page {
 
 
 
-<!-- ======================================================
+<!-- =====================================================
      04 FIND WHERE
-     ====================================================== -->
+     ===================================================== -->
 
-<section class="story-section">
+<section class="chapter">
 
-  <div>
-
-    <span class="step">
-      04 · FIND WHERE
-    </span>
-
+  <div class="chapter-number">
+    04
   </div>
 
+  <div class="chapter-content">
 
-  <div>
+    <span class="chapter-label">
+      FIND WHERE
+    </span>
 
-    <h2>
-
-      Work backward from
-      the customer outcome.
-
-    </h2>
-
-
-    <table class="data-table">
-
-      <thead>
-
-        <tr>
-
-          <th>
-            METRIC
-          </th>
-
-          <th>
-            PREVIOUS 6 WEEKS
-          </th>
-
-          <th>
-            RECENT 6 WEEKS
-          </th>
-
-        </tr>
-
-      </thead>
+    <h3>
+      Work backward from the customer outcome.
+    </h3>
 
 
-      <tbody>
+    <div class="table-wrap">
 
+      <table>
 
-        <tr>
+        <thead>
 
-          <td>
-            OTD
-          </td>
+          <tr>
+            <th>METRIC</th>
+            <th>PREVIOUS 6 WEEKS</th>
+            <th>RECENT 6 WEEKS</th>
+          </tr>
 
-          <td>
-            95%
-          </td>
+        </thead>
 
-          <td>
-            88%
-          </td>
+        <tbody>
 
-        </tr>
+          <tr>
+            <td>OTD</td>
+            <td>95%</td>
+            <td>88%</td>
+          </tr>
 
+          <tr>
+            <td>Production completed by required date</td>
+            <td>93%</td>
+            <td>92%</td>
+          </tr>
 
-        <tr>
+          <tr class="highlight">
+            <td>Production Complete → Ship</td>
+            <td>1.1 days</td>
+            <td>2.6 days</td>
+          </tr>
 
-          <td>
-            Production completed
-            by required date
-          </td>
+          <tr>
+            <td>Ship → Delivery</td>
+            <td>2.0 days</td>
+            <td>2.1 days</td>
+          </tr>
 
-          <td>
-            93%
-          </td>
+        </tbody>
 
-          <td>
-            92%
-          </td>
+      </table>
 
-        </tr>
-
-
-        <tr class="highlight-row">
-
-          <td>
-            Production Complete → Ship
-          </td>
-
-          <td>
-            1.1 days
-          </td>
-
-          <td>
-            2.6 days
-          </td>
-
-        </tr>
-
-
-        <tr>
-
-          <td>
-            Ship → Delivery
-          </td>
-
-          <td>
-            2.0 days
-          </td>
-
-          <td>
-            2.1 days
-          </td>
-
-        </tr>
-
-
-      </tbody>
-
-    </table>
+    </div>
 
 
     <p>
 
-      Production completion and transportation
-      were nearly stable.
+      Production completion remained nearly unchanged,
+      and transportation after shipment was also stable.
 
-      The deterioration was concentrated
-      after production and before shipment.
+      The largest deterioration occurred after production
+      and before shipment.
 
     </p>
 
 
-    <div class="diagnostic">
+    <div class="path">
 
-      <span>
+      <span class="path-step">
         OTD ↓
       </span>
 
-      <b>→</b>
+      <span class="path-arrow">→</span>
 
-      <span>
+      <span class="path-step">
         Production stable
       </span>
 
-      <b>→</b>
+      <span class="path-arrow">→</span>
 
-      <span>
+      <span class="path-step">
         Production → Ship ↑
       </span>
 
-      <b>→</b>
+      <span class="path-arrow">→</span>
 
-      <span>
+      <span class="path-step">
         Warehouse Processing ↑
       </span>
 
-      <b>→</b>
+      <span class="path-arrow">→</span>
 
-      <span>
+      <span class="path-step">
         Product C
       </span>
 
     </div>
 
 
-    <table class="data-table">
+    <div class="table-wrap">
 
-      <thead>
+      <table>
 
-        <tr>
+        <thead>
 
-          <th>
-            PRODUCT FAMILY
-          </th>
+          <tr>
+            <th>PRODUCT FAMILY</th>
+            <th>PREVIOUS</th>
+            <th>RECENT</th>
+          </tr>
 
-          <th>
-            PREVIOUS
-          </th>
+        </thead>
 
-          <th>
-            RECENT
-          </th>
+        <tbody>
 
-        </tr>
+          <tr>
+            <td>Product A</td>
+            <td>0.2 day</td>
+            <td>0.3 day</td>
+          </tr>
 
-      </thead>
+          <tr>
+            <td>Product B</td>
+            <td>0.2 day</td>
+            <td>0.3 day</td>
+          </tr>
 
+          <tr class="highlight">
+            <td>Product C</td>
+            <td>0.3 day</td>
+            <td>3.1 days</td>
+          </tr>
 
-      <tbody>
+          <tr>
+            <td>Product D</td>
+            <td>0.2 day</td>
+            <td>0.4 day</td>
+          </tr>
 
+        </tbody>
 
-        <tr>
+      </table>
 
-          <td>
-            Product A
-          </td>
-
-          <td>
-            0.2 day
-          </td>
-
-          <td>
-            0.3 day
-          </td>
-
-        </tr>
-
-
-        <tr>
-
-          <td>
-            Product B
-          </td>
-
-          <td>
-            0.2 day
-          </td>
-
-          <td>
-            0.3 day
-          </td>
-
-        </tr>
-
-
-        <tr class="highlight-row">
-
-          <td>
-            Product C
-          </td>
-
-          <td>
-            0.3 day
-          </td>
-
-          <td>
-            3.1 days
-          </td>
-
-        </tr>
-
-
-        <tr>
-
-          <td>
-            Product D
-          </td>
-
-          <td>
-            0.2 day
-          </td>
-
-          <td>
-            0.4 day
-          </td>
-
-        </tr>
-
-
-      </tbody>
-
-    </table>
+    </div>
 
   </div>
 
@@ -1855,230 +1539,160 @@ body.case-page {
 
 
 
-<!-- ======================================================
+<!-- =====================================================
      05 FIND WHY
-     ====================================================== -->
+     ===================================================== -->
 
-<section class="story-section">
+<section class="chapter">
 
-  <div>
-
-    <span class="step">
-      05 · FIND WHY
-    </span>
-
+  <div class="chapter-number">
+    05
   </div>
 
+  <div class="chapter-content">
 
-  <div>
+    <span class="chapter-label">
+      FIND WHY
+    </span>
 
-    <h2>
-
-      A new control changed
-      the fulfillment process.
-
-    </h2>
-
+    <h3>
+      Product C had gained a new fulfillment control.
+    </h3>
 
     <p>
 
-      About seven weeks earlier,
-      Product C gained a
-      <strong>
-        Manual Allocation Review
-      </strong>.
+      About seven weeks earlier, the company introduced
+      a <strong>Manual Allocation Review</strong> for Product C.
 
-      The control was introduced to prevent
-      constrained inventory from being
-      consumed by standard orders before
-      strategic-customer demand could
-      be protected.
+      The control was designed to prevent constrained
+      inventory from being consumed by standard orders
+      before strategic-customer demand could be protected.
 
     </p>
 
 
-    <p>
+    <div class="process-change">
+
+
+      <div class="process-card">
+
+        <small>
+          BEFORE
+        </small>
+
+        <strong>
+          Packing Complete<br>
+          ↓<br>
+          Warehouse Queue<br>
+          ↓<br>
+          Inventory Ready
+        </strong>
+
+      </div>
+
+
+      <div class="process-card after">
+
+        <small>
+          AFTER
+        </small>
+
+        <strong>
+          Packing Complete<br>
+          ↓<br>
+          Manual Allocation Review<br>
+          ↓<br>
+          Warehouse Queue<br>
+          ↓<br>
+          Inventory Ready
+        </strong>
+
+      </div>
+
+
+    </div>
+
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>STAGE</th>
+            <th>BEFORE</th>
+            <th>AFTER</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr class="highlight">
+            <td>Packing → Allocation Review Start</td>
+            <td>N/A</td>
+            <td>1.8 days</td>
+          </tr>
+
+          <tr>
+            <td>Allocation Review Processing</td>
+            <td>N/A</td>
+            <td>0.2 day</td>
+          </tr>
+
+          <tr class="highlight">
+            <td>Review Complete → Warehouse Queue</td>
+            <td>N/A</td>
+            <td>0.7 day</td>
+          </tr>
+
+          <tr>
+            <td>Warehouse Queue → Ready</td>
+            <td>0.3 day</td>
+            <td>0.4 day</td>
+          </tr>
+
+          <tr>
+            <td><strong>Total</strong></td>
+            <td><strong>0.3 day</strong></td>
+            <td><strong>3.1 days</strong></td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <div class="root-cause">
 
       <strong>
-        Before:
+        The bottleneck wasn't the work.
+        It was the wait.
       </strong>
 
-      Packing Complete
-      →
-      Warehouse Queue
-      →
-      Inventory Ready
-
-    </p>
-
-
-    <p>
-
-      <strong>
-        After:
-      </strong>
-
-      Packing Complete
-      →
-      Manual Allocation Review
-      →
-      Warehouse Queue
-      →
-      Inventory Ready
-
-    </p>
-
-
-    <table class="data-table">
-
-      <thead>
-
-        <tr>
-
-          <th>
-            STAGE
-          </th>
-
-          <th>
-            BEFORE
-          </th>
-
-          <th>
-            AFTER
-          </th>
-
-        </tr>
-
-      </thead>
-
-
-      <tbody>
-
-
-        <tr class="highlight-row">
-
-          <td>
-            Packing →
-            Allocation Review Start
-          </td>
-
-          <td>
-            N/A
-          </td>
-
-          <td>
-            1.8 days
-          </td>
-
-        </tr>
-
-
-        <tr>
-
-          <td>
-            Allocation Review Processing
-          </td>
-
-          <td>
-            N/A
-          </td>
-
-          <td>
-            0.2 day
-          </td>
-
-        </tr>
-
-
-        <tr class="highlight-row">
-
-          <td>
-            Review Complete →
-            Warehouse Queue
-          </td>
-
-          <td>
-            N/A
-          </td>
-
-          <td>
-            0.7 day
-          </td>
-
-        </tr>
-
-
-        <tr>
-
-          <td>
-            Warehouse Queue →
-            Ready
-          </td>
-
-          <td>
-            0.3 day
-          </td>
-
-          <td>
-            0.4 day
-          </td>
-
-        </tr>
-
-
-        <tr>
-
-          <td>
-            <strong>
-              Total
-            </strong>
-          </td>
-
-          <td>
-            <strong>
-              0.3 day
-            </strong>
-          </td>
-
-          <td>
-            <strong>
-              3.1 days
-            </strong>
-          </td>
-
-        </tr>
-
-
-      </tbody>
-
-    </table>
-
-
-    <div class="quote">
-
-      “The bottleneck wasn't the work.
-      It was the wait.”
-
-      <small>
+      <span>
         PROCESSING TIME ≠ WAITING / QUEUE TIME
-      </small>
+      </span>
 
     </div>
 
 
     <p>
 
-      The review itself required only about
+      The manual review itself took only about
       0.2 day.
 
-      Most of the delay came from waiting to
-      enter the review and waiting again
-      after review.
+      The larger delay came from approximately
+      1.8 days waiting to enter the review and
+      another 0.7 day waiting after the review
+      before entering the warehouse queue.
 
-      Production volume, quality,
-      transportation, and promise-date
-      revision behavior were also checked
-      and did not show changes large enough
+      Production volume, production quality,
+      transportation, and promise-date revision
+      behavior did not show changes large enough
       to explain the deterioration.
 
     </p>
@@ -2089,55 +1703,55 @@ body.case-page {
 
 
 
-<!-- ======================================================
+<!-- =====================================================
      06 BUSINESS DECISION
-     ====================================================== -->
+     ===================================================== -->
 
-<section class="story-section">
+<section class="chapter">
 
-  <div>
-
-    <span class="step">
-      06 · BUSINESS DECISION
-    </span>
-
+  <div class="chapter-number">
+    06
   </div>
 
+  <div class="chapter-content">
 
-  <div>
+    <span class="chapter-label">
+      BUSINESS DECISION
+    </span>
 
-    <h2>
-
+    <h3>
       Preserve the control.
       Remove unnecessary waiting.
-
-    </h2>
-
+    </h3>
 
     <p>
 
-      Removing Manual Allocation Review
-      immediately would ignore why it exists:
-      protecting scarce inventory for
-      strategic customers.
+      Simply removing Manual Allocation Review would
+      ignore why the control exists: protecting scarce
+      inventory for strategic customers.
 
-      The first decision question is therefore:
-
-      <strong>
-        How often does the review actually
-        change an allocation decision?
-      </strong>
+      The better decision is to first determine how
+      often human review actually changes an allocation.
 
     </p>
 
 
-    <div class="decision-flow">
+    <div class="decision-question">
+
+      How can we preserve priority-allocation control
+      without forcing every Product C order through
+      the same manual queue?
+
+    </div>
 
 
-      <div class="decision-card">
+    <div class="decision-grid">
+
+
+      <div class="decision">
 
         <small>
-          STANDARD / RULE-BASED
+          STANDARD CASE
         </small>
 
         <strong>
@@ -2146,19 +1760,18 @@ body.case-page {
 
         <p>
 
-          Route normal orders directly when
-          allocation rules can make the
-          decision reliably.
+          Allow rule-based orders to move directly
+          when the allocation decision is clear.
 
         </p>
 
       </div>
 
 
-      <div class="decision-card">
+      <div class="decision">
 
         <small>
-          CONFLICT / AMBIGUITY
+          EXCEPTION
         </small>
 
         <strong>
@@ -2167,8 +1780,8 @@ body.case-page {
 
         <p>
 
-          Escalate only true exceptions that
-          require human judgment.
+          Send only inventory conflicts or ambiguous
+          allocation decisions to human review.
 
         </p>
 
@@ -2180,14 +1793,17 @@ body.case-page {
 
     <p>
 
-      This converts a 100% manual-review
-      workflow into an exception-based
-      control.
+      This changes the operating model from
 
-      If the review rarely changes allocation
-      and existing system rules already
-      protect priority customers,
-      full removal can then be evaluated.
+      <strong>
+        100% of orders → Manual Review
+      </strong>
+
+      to an
+
+      <strong>
+        exception-based workflow.
+      </strong>
 
     </p>
 
@@ -2197,88 +1813,77 @@ body.case-page {
 
 
 
-<!-- ======================================================
+<!-- =====================================================
      07 VALIDATION
-     ====================================================== -->
+     ===================================================== -->
 
-<section class="story-section">
+<section class="chapter">
 
-  <div>
-
-    <span class="step">
-      07 · VALIDATE THE DECISION
-    </span>
-
+  <div class="chapter-number">
+    07
   </div>
 
+  <div class="chapter-content">
 
-  <div>
+    <span class="chapter-label">
+      VALIDATE THE DECISION
+    </span>
 
-    <h2>
-
-      A successful change must improve
-      speed without recreating the
-      original risk.
-
-    </h2>
-
+    <h3>
+      Faster is only better if the original business
+      risk remains controlled.
+    </h3>
 
     <p>
 
-      Pilot the automated / exception-based
-      flow for a subset of Product C orders
-      and evaluate both service performance
-      and control effectiveness.
+      Pilot the automated / exception-based allocation
+      workflow on a subset of Product C orders and
+      evaluate both service performance and control
+      effectiveness.
 
     </p>
 
 
-    <div class="success">
+    <div class="validation-grid">
 
 
-      <div>
+      <div class="validation">
 
         <strong>
-          Warehouse Processing Time ↓
+          Processing Time ↓
         </strong>
 
         <span>
-
-          Move back toward the historical
-          ~0.3-day level.
-
+          Move warehouse processing back toward the
+          historical ~0.3-day level.
         </span>
 
       </div>
 
 
-      <div>
+      <div class="validation">
 
         <strong>
           OTD ↑
         </strong>
 
         <span>
-
           Recover toward the historical
           94–96% range.
-
         </span>
 
       </div>
 
 
-      <div>
+      <div class="validation">
 
         <strong>
-          Allocation Errors ↔
+          Allocation Risk ↔
         </strong>
 
         <span>
-
           Do not increase strategic-customer
-          inventory failures.
-
+          inventory allocation failures.
         </span>
 
       </div>
@@ -2295,58 +1900,42 @@ body.case-page {
 
 
 
-<!-- ======================================================
-     CASE TAKEAWAY
-     ====================================================== -->
+<!-- =====================================================
+     TAKEAWAY
+     ===================================================== -->
 
-<section class="closing">
+<section class="takeaway">
 
-  <div class="container">
+  <div class="takeaway-inner">
 
-
-    <p class="section-label">
-
-      CASE TAKEAWAY
-
-    </p>
-
+    <span class="takeaway-label">
+      CASE 01 / TAKEAWAY
+    </span>
 
     <h2>
 
-      Start from the customer outcome.
-      Separate WHERE from WHY.
-      Understand the control before
-      removing the bottleneck.
+      Start from the outcome.<br>
+      Separate WHERE from WHY.<br>
+      Understand the control before removing it.
 
     </h2>
 
+    <p>
 
-    <p class="case-intro">
+      The case started with a factory that looked healthy
+      and a customer KPI that did not.
 
-      The case began with a factory that
-      looked healthy and a customer KPI
-      that did not.
-
-      The useful answer came from defining
-      the metric, reconciling grain,
-      tracing the process, separating
-      processing time from waiting time,
-      and connecting the root cause to a
-      decision that respected the business
-      constraint.
+      The useful answer came from defining the metric,
+      reconciling grain, tracing the process, separating
+      processing time from waiting time, and connecting
+      the root cause to a decision that respected the
+      original business constraint.
 
     </p>
 
-
-    <a
-      class="primary-link"
-      href="../../"
-    >
-
-      ← Back to all cases
-
+    <a href="../../">
+      ← Return to Case Library
     </a>
-
 
   </div>
 
@@ -2357,13 +1946,9 @@ body.case-page {
 
 
 
-<!-- ======================================================
-     FOOTER
-     ====================================================== -->
+<footer class="case-footer">
 
-<footer>
-
-  <div class="container footer-inner">
+  <div class="footer-inner">
 
     <span>
       Analytics Decision Cases
@@ -2379,5 +1964,4 @@ body.case-page {
 
 
 </body>
-
 </html>
